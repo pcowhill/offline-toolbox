@@ -1,0 +1,57 @@
+{
+  "swagger": "2.0",
+  "info": { "title": "Inventory (Swagger 2.0 fixture)", "version": "0.9" },
+  "host": "127.0.0.1:4010",
+  "basePath": "/inv",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "securityDefinitions": {
+    "key": { "type": "apiKey", "name": "X-API-Key", "in": "header" }
+  },
+  "security": [{ "key": [] }],
+  "paths": {
+    "/items": {
+      "get": {
+        "tags": ["items"],
+        "summary": "List items",
+        "parameters": [
+          { "name": "page", "in": "query", "type": "integer", "default": 1 }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "array", "items": { "$ref": "#/definitions/Item" } } }
+        }
+      },
+      "post": {
+        "tags": ["items"],
+        "summary": "Create item",
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "$ref": "#/definitions/Item" } }
+        ],
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/items/{id}/photo": {
+      "post": {
+        "tags": ["items"],
+        "summary": "Upload photo",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          { "name": "note", "in": "formData", "type": "string" },
+          { "name": "file", "in": "formData", "type": "file", "required": true }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    }
+  },
+  "definitions": {
+    "Item": {
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string", "example": "ABC-1" },
+        "quantity": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

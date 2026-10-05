@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="%SITE_TAGLINE%" />
+    <link rel="icon" href="./logo.svg" type="image/svg+xml" />
+    <title>%SITE_TITLE%</title>
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <div class="portal">
+      <header class="portal__header">
+        <div class="portal__brand">
+          <img src="./logo.svg" alt="" width="40" height="40" />
+          <div>
+            <h1 class="portal__title">%SITE_TITLE%</h1>
+            <p class="portal__tagline">%SITE_TAGLINE%</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn--ghost" id="theme-toggle" aria-label="Change theme">
+          <span id="theme-label">Theme: system</span>
+        </button>
+      </header>
+
+      <main class="portal__main">
+        <h2 class="portal__section-title">Tools <span class="badge">%TOOL_COUNT%</span></h2>
+        <ul class="tool-grid" data-testid="tool-grid">
+          <!--TOOL_CARDS-->
+        </ul>
+
+        <section class="portal__info" aria-label="About">
+          <div class="info-card">
+            <h3>Works offline</h3>
+            <p>
+              Every tool is a static web page with all code bundled locally. Copy this site to a
+              computer without Internet access and serve it with any web server.
+            </p>
+          </div>
+          <div class="info-card">
+            <h3>Private by design</h3>
+            <p>
+              Your files and data are processed in your browser. Nothing is uploaded, and there is
+              no analytics or telemetry. A Content-Security-Policy blocks loading anything from
+              other hosts.
+            </p>
+          </div>
+          <div class="info-card">
+            <h3>Run it yourself</h3>
+            <p>
+              Serve the built folder with e.g. <code>python3 -m http.server 8080</code> and open
+              <code>http://localhost:8080/</code>. See <code>OFFLINE-README.txt</code>.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="portal__footer">
+        <span>Offline Toolbox — open source, no tracking, no network dependencies.</span>
+      </footer>
+    </div>
+  </body>
+</html>

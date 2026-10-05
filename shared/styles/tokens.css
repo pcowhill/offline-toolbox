@@ -1,0 +1,155 @@
+/*
+ * Offline Toolbox design tokens. Shared by the portal and every tool so they feel related.
+ * System font stacks only — no web fonts are downloaded.
+ */
+:root {
+  color-scheme: light dark;
+
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, Cantarell, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-mono:
+    ui-monospace, 'SFMono-Regular', 'Cascadia Mono', 'Segoe UI Mono', 'DejaVu Sans Mono',
+    'Liberation Mono', Menlo, Consolas, monospace;
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 10px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-md: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 28px;
+
+  --header-height: 48px;
+
+  /* Light palette */
+  --bg: #f5f6f8;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #eceef2;
+  --bg-hover: #e8eaef;
+  --bg-active: #dfe3ea;
+  --border: #d5d9e0;
+  --border-strong: #b8bec9;
+  --text: #1c2129;
+  --text-muted: #5b6472;
+  --text-faint: #8a92a0;
+  --accent: #2563eb;
+  --accent-hover: #1d4fd8;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(37, 99, 235, 0.12);
+  --focus-ring: 0 0 0 2px var(--bg-elevated), 0 0 0 4px var(--accent);
+  --danger: #c52a2a;
+  --danger-soft: rgba(197, 42, 42, 0.1);
+  --warning: #a16207;
+  --warning-soft: rgba(202, 138, 4, 0.14);
+  --success: #15803d;
+  --success-soft: rgba(21, 128, 61, 0.12);
+  --info: #0e7490;
+  --info-soft: rgba(14, 116, 144, 0.1);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --shadow: 0 2px 8px rgba(15, 23, 42, 0.1), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.18);
+  --backdrop: rgba(15, 23, 42, 0.45);
+
+  /* Syntax colours (JSON/XML/HTTP) */
+  --syntax-key: #7c3aed;
+  --syntax-string: #0f7b3a;
+  --syntax-number: #b45309;
+  --syntax-boolean: #1d4ed8;
+  --syntax-null: #6b7280;
+  --syntax-punct: #4b5563;
+  --syntax-tag: #b91c1c;
+  --syntax-attr: #7c3aed;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #15181d;
+    --bg-elevated: #1d2128;
+    --bg-sunken: #111317;
+    --bg-hover: #262b33;
+    --bg-active: #2e343e;
+    --border: #323842;
+    --border-strong: #4a525f;
+    --text: #e6e9ee;
+    --text-muted: #a3abb8;
+    --text-faint: #737c8a;
+    --accent: #6d9dff;
+    --accent-hover: #8bb1ff;
+    --accent-contrast: #0b1220;
+    --accent-soft: rgba(109, 157, 255, 0.16);
+    --danger: #f87171;
+    --danger-soft: rgba(248, 113, 113, 0.14);
+    --warning: #fbbf24;
+    --warning-soft: rgba(251, 191, 36, 0.14);
+    --success: #4ade80;
+    --success-soft: rgba(74, 222, 128, 0.13);
+    --info: #22d3ee;
+    --info-soft: rgba(34, 211, 238, 0.12);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+    --backdrop: rgba(0, 0, 0, 0.6);
+    --syntax-key: #c4a1ff;
+    --syntax-string: #86efac;
+    --syntax-number: #fdba74;
+    --syntax-boolean: #93c5fd;
+    --syntax-null: #9ca3af;
+    --syntax-punct: #9ca3af;
+    --syntax-tag: #fca5a5;
+    --syntax-attr: #c4a1ff;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #15181d;
+  --bg-elevated: #1d2128;
+  --bg-sunken: #111317;
+  --bg-hover: #262b33;
+  --bg-active: #2e343e;
+  --border: #323842;
+  --border-strong: #4a525f;
+  --text: #e6e9ee;
+  --text-muted: #a3abb8;
+  --text-faint: #737c8a;
+  --accent: #6d9dff;
+  --accent-hover: #8bb1ff;
+  --accent-contrast: #0b1220;
+  --accent-soft: rgba(109, 157, 255, 0.16);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.13);
+  --info: #22d3ee;
+  --info-soft: rgba(34, 211, 238, 0.12);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --backdrop: rgba(0, 0, 0, 0.6);
+  --syntax-key: #c4a1ff;
+  --syntax-string: #86efac;
+  --syntax-number: #fdba74;
+  --syntax-boolean: #93c5fd;
+  --syntax-null: #9ca3af;
+  --syntax-punct: #9ca3af;
+  --syntax-tag: #fca5a5;
+  --syntax-attr: #c4a1ff;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
