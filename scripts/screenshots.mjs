@@ -14,7 +14,11 @@ const api = await startMockApi(4010);
 const browser = await chromium.launch();
 
 async function shoot(name, { theme = 'light', width = 1280, height = 800 } = {}, run) {
-  const context = await browser.newContext({ viewport: { width, height }, colorScheme: theme, deviceScaleFactor: 1 });
+  const context = await browser.newContext({
+    viewport: { width, height },
+    colorScheme: theme,
+    deviceScaleFactor: 1,
+  });
   const page = await context.newPage();
   await run(page);
   await page.waitForTimeout(600);
@@ -26,10 +30,17 @@ async function shoot(name, { theme = 'light', width = 1280, height = 800 } = {},
 const base = 'http://127.0.0.1:4181/';
 async function openPdf(page, files) {
   await page.goto(`${base}pdf-toolbox/`);
-  const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.getByTestId('welcome-open').click()]);
+  const [chooser] = await Promise.all([
+    page.waitForEvent('filechooser'),
+    page.getByTestId('welcome-open').click(),
+  ]);
   await chooser.setFiles(files.map((f) => path.join(fixtures, 'pdf', f)));
   await page.getByTestId('page-card').first().locator('img').waitFor();
-  await page.locator('[data-testid=toast] button').first().click().catch(() => undefined);
+  await page
+    .locator('[data-testid=toast] button')
+    .first()
+    .click()
+    .catch(() => undefined);
 }
 
 await shoot('portal', {}, (page) => page.goto(base));
@@ -40,7 +51,11 @@ await shoot('api-workbench', {}, async (page) => {
   await page.getByTestId('url-input').fill('http://127.0.0.1:4010/api/books?author=Austen');
   await page.getByTestId('tab-headers').click();
   await page.getByTestId('headers-editor-new-key').fill('Accept');
-  await page.getByTestId('headers-editor').getByLabel('Header value', { exact: true }).last().fill('application/json');
+  await page
+    .getByTestId('headers-editor')
+    .getByLabel('Header value', { exact: true })
+    .last()
+    .fill('application/json');
   await page.getByTestId('send-button').click();
   await page.getByTestId('response-status').waitFor();
   await page.getByTestId('view-tree').click();
@@ -49,16 +64,26 @@ await shoot('api-workbench', {}, async (page) => {
 await shoot('api-workbench-openapi-dark', { theme: 'dark' }, async (page) => {
   await page.goto(`${base}api-workbench/`);
   await page.getByTestId('sidebar-specs').click();
-  const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.getByTestId('import-spec').click()]);
+  const [chooser] = await Promise.all([
+    page.waitForEvent('filechooser'),
+    page.getByTestId('import-spec').click(),
+  ]);
   await chooser.setFiles(path.join(fixtures, 'openapi/library-api.yaml'));
   await page.getByTestId('operation-row').filter({ hasText: 'Add a book' }).click();
-  await page.locator('[data-testid=toast] button').first().click().catch(() => undefined);
+  await page
+    .locator('[data-testid=toast] button')
+    .first()
+    .click()
+    .catch(() => undefined);
 });
 
 await shoot('pdf-organize', {}, async (page) => {
   await openPdf(page, ['three-pages.pdf', 'form.pdf', 'second.pdf']);
   await page.getByTestId('page-card').nth(1).click();
-  await page.getByTestId('page-card').nth(2).click({ modifiers: ['Control'] });
+  await page
+    .getByTestId('page-card')
+    .nth(2)
+    .click({ modifiers: ['Control'] });
 });
 
 await shoot('pdf-edit', {}, async (page) => {
@@ -95,7 +120,9 @@ await shoot('pdf-form-dark', { theme: 'dark' }, async (page) => {
   await page.getByTestId('panel-form').click();
 });
 
-await shoot('mobile-api-workbench', { width: 390, height: 800 }, (page) => page.goto(`${base}api-workbench/`));
+await shoot('mobile-api-workbench', { width: 390, height: 800 }, (page) =>
+  page.goto(`${base}api-workbench/`),
+);
 
 await browser.close();
 server.close();
