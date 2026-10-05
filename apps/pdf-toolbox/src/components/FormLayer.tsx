@@ -9,6 +9,8 @@ import {
 import { pdfDocument } from '../state/registry';
 import { checkpoint, setFormValue, useStore } from '../state/store';
 
+const NO_FIELDS: FormFieldInfo[] = [];
+
 interface Widget {
   id: string;
   fieldName: string;
@@ -31,7 +33,7 @@ export function FormLayer({ page, scale }: { page: WorkspacePage; scale: number 
     view: [0, 0, 0, 0],
   });
   const tool = useStore((s) => s.tool);
-  const fields = useStore((s) => s.sources[page.sourceId]?.formFields ?? []);
+  const fields = useStore((s) => s.sources[page.sourceId]?.formFields ?? NO_FIELDS);
   const values = useStore((s) => s.formValues[page.sourceId]);
   const key = `${page.sourceId}:${page.sourceIndex}`;
 
@@ -167,7 +169,8 @@ function FieldInput({
     );
   }
   if (field.type === 'radio') {
-    const option = widget.buttonValue ?? '';
+    const state = widget.buttonValue ?? '';
+    const option = field.stateToOption?.[state] ?? state;
     return (
       <label {...common} className="form-field form-field--check">
         <input

@@ -147,6 +147,7 @@ export function normalizeRequestSpec(value: unknown): RequestSpec {
       ? (settings.credentials as RequestSpec['settings']['credentials'])
       : 'omit',
     redirect: settings.redirect === 'error' ? 'error' : 'follow',
+    ...(settings.saveSensitiveHeaders === true ? { saveSensitiveHeaders: true } : {}),
   };
   return spec;
 }

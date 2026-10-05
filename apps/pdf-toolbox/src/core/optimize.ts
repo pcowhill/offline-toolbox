@@ -7,13 +7,13 @@ import {
   PDFName,
   PDFNumber,
   PDFRawStream,
-  PDFRef,
-  PDFStream,
   type PDFContext,
-  type PDFObject,
 } from 'pdf-lib';
 import { decodeImageXObject, findImageXObjects, type DecodedImage } from './pdfImages';
 import { loadPdfLib, PRODUCER } from './buildPdf';
+import { removeUnreachableObjects } from './prune';
+
+export { removeUnreachableObjects };
 
 export type OptimizePreset = 'high' | 'balanced' | 'small';
 
@@ -76,38 +76,6 @@ export interface OptimizeResult {
   streamsCompressed: number;
 }
 
-/** Deletes objects that cannot be reached from the document trailer (orphans, old revisions). */
-export function removeUnreachableObjects(context: PDFContext): number {
-  const reachable = new Set<string>();
-  const stack: PDFObject[] = [];
-  const { Root, Info, Encrypt } = context.trailerInfo;
-  for (const entry of [Root, Info, Encrypt]) if (entry) stack.push(entry);
-  while (stack.length) {
-    const object = stack.pop()!;
-    if (object instanceof PDFRef) {
-      const key = object.toString();
-      if (reachable.has(key)) continue;
-      reachable.add(key);
-      const target = context.lookup(object);
-      if (target) stack.push(target);
-    } else if (object instanceof PDFDict) {
-      for (const [, value] of object.entries()) stack.push(value);
-    } else if (object instanceof PDFArray) {
-      for (const value of object.asArray()) stack.push(value);
-    } else if (object instanceof PDFStream) {
-      stack.push(object.dict);
-    }
-  }
-  let removed = 0;
-  for (const [ref] of context.enumerateIndirectObjects()) {
-    if (!reachable.has(ref.toString())) {
-      context.delete(ref);
-      removed++;
-    }
-  }
-  return removed;
-}
-
 async function deflate(bytes: Uint8Array): Promise<Uint8Array | null> {
   if (typeof CompressionStream === 'undefined') return null;
   const stream = new Blob([bytes as BlobPart])
@@ -163,6 +131,11 @@ export async function optimizePdf(
     // Skip soft masks themselves (they are referenced via /SMask from colour images).
     const isMask = images.some((other) => other.stream.dict.get(PDFName.of('SMask')) === ref);
     if (isMask) {
+      kept++;
+      continue;
+    }
+    // Colour-key masks (/Mask [min max …]) cannot survive lossy recompression or a colour-space change.
+    if (stream.dict.get(PDFName.of('Mask')) instanceof PDFArray) {
       kept++;
       continue;
     }

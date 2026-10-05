@@ -43,7 +43,8 @@ repository. You can
   to a non-local host.
 - **Local storage is explicit.** API Workbench stores collections, environments, history and
   imported specs in the browser's IndexedDB (never synced anywhere); sensitive variable values are
-  kept in memory only unless you choose to save them. PDF Toolbox keeps documents in memory only.
+  kept in memory only unless you choose to save them, and credentials typed into the Auth tab or
+  credential headers (`Authorization`, `Cookie`, API keys) are not saved unless you opt in. PDF Toolbox keeps documents in memory only.
 
 ## Repository architecture
 

@@ -145,7 +145,10 @@ export const HELP_SECTIONS: HelpSection[] = [
         </ul>
         <p>
           Credentials typed directly into the Auth tab are <em>not</em> saved unless you tick "Save
-          credentials with this request". Prefer variables such as <code>{'{{token}}'}</code>.
+          credentials with this request". The same applies to values of credential headers such as{' '}
+          <code>Authorization</code>, <code>Cookie</code> or <code>X-API-Key</code> (allow saving
+          them on the request's Settings tab if you want). Prefer variables such as{' '}
+          <code>{'{{token}}'}</code>.
         </p>
       </>
     ),

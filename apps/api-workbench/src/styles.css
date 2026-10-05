@@ -1252,3 +1252,8 @@ tr.is-dragging {
 .env-table tr.is-disabled input.input {
   opacity: 0.5;
 }
+
+.request-note {
+  margin: 8px 0 0;
+  font-size: var(--text-sm);
+}

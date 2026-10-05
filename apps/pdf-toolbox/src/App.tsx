@@ -96,7 +96,9 @@ export function App() {
     'Mod+Shift+Z': redo,
     'Mod+Y': redo,
     'Mod+O': () => void openFiles(),
-    'Mod+S': () => pages.length && void exportPdf(),
+    'Mod+S': () => {
+      if (pages.length) void exportPdf();
+    },
     'Mod+A': () => mode === 'organize' && selectAll(),
     'Mod+=': () => setZoom(useStore.getState().zoom * 1.2),
     'Mod+-': () => setZoom(useStore.getState().zoom / 1.2),

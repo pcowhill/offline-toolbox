@@ -76,9 +76,12 @@ export function App() {
       else setSaveOpen(true);
     },
     Escape: () => {
-      if (tab?.kind === 'request' && tab.sending) cancelRequest(tab.id);
+      if (tab?.kind !== 'request' || !tab.sending) return false;
+      cancelRequest(tab.id);
     },
-    'Alt+T': () => openNewTab(),
+    'Alt+T': () => {
+      openNewTab();
+    },
     'Alt+W': () => {
       if (tab) closeTab(tab.id);
     },

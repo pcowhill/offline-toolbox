@@ -224,3 +224,44 @@ describe('persistence (IndexedDB)', () => {
     });
   }
 });
+
+describe('credential headers', () => {
+  it('are not persisted unless allowed; variable references always are', async () => {
+    const { stripRequestSecrets, unsavedSensitiveHeaders } = await import('../sanitize');
+    const spec = createRequestSpec({
+      url: 'http://h',
+      headers: [
+        createKeyValue({ key: 'Authorization', value: 'Bearer literal' }),
+        createKeyValue({ key: 'X-API-Key', value: '{{apiKey}}' }),
+        createKeyValue({ key: 'Cookie', value: 'sid=1' }),
+        createKeyValue({ key: 'Accept', value: 'application/json' }),
+      ],
+    });
+    expect(unsavedSensitiveHeaders(spec).map((h) => h.key)).toEqual(['Authorization', 'Cookie']);
+    expect(stripRequestSecrets(spec).headers.map((h) => h.value)).toEqual([
+      '',
+      '{{apiKey}}',
+      '',
+      'application/json',
+    ]);
+    const history = createHistoryEntry(spec, { status: 200 });
+    expect(JSON.stringify(history)).not.toContain('literal');
+    const allowed = { ...spec, settings: { ...spec.settings, saveSensitiveHeaders: true } };
+    expect(stripRequestSecrets(allowed).headers[0].value).toBe('Bearer literal');
+    const exported = JSON.stringify(
+      createExport(
+        [
+          insertItem(createCollection('C'), null, {
+            type: 'request',
+            id: 'x',
+            name: 'x',
+            request: spec,
+          }),
+        ],
+        [],
+      ),
+    );
+    expect(exported).not.toContain('literal');
+    expect(exported).not.toContain('sid=1');
+  });
+});

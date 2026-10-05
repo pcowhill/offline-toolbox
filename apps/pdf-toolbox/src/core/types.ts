@@ -137,6 +137,11 @@ export interface FormFieldInfo {
   readOnly: boolean;
   multiline: boolean;
   required: boolean;
+  /**
+   * Radio buttons: widget appearance-state name → option value. They differ when the field
+   * has an /Opt array (Acrobat stores states "0", "1", … and the export values in /Opt).
+   */
+  stateToOption?: Record<string, string>;
 }
 
 export interface SourceInfo {

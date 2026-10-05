@@ -47,6 +47,8 @@ export interface RequestSettings {
   /** Whether the browser sends cookies / HTTP auth for cross-origin requests. */
   credentials: 'omit' | 'same-origin' | 'include';
   redirect: 'follow' | 'error';
+  /** Keep values of credential-like headers (Authorization, API keys …) when saving. */
+  saveSensitiveHeaders?: boolean;
 }
 
 export interface RequestSpec {

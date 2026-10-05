@@ -46,9 +46,10 @@ export function openPdfFor(id: string, name: string, bytes: Uint8Array) {
 
 /** Frees memory of sources no longer referenced by any page. */
 export async function releaseSources(keep: Set<string>) {
-  for (const [id, entry] of sources) {
-    if (keep.has(id)) continue;
-    sources.delete(id);
+  // Detach synchronously first: documents opened while we await below must not be released.
+  const released = [...sources].filter(([id]) => !keep.has(id));
+  for (const [id] of released) sources.delete(id);
+  for (const [, entry] of released) {
     try {
       const pdf = await entry.pdf;
       await pdf.loadingTask.destroy();

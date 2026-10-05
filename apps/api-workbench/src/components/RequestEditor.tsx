@@ -17,6 +17,7 @@ import { toast } from '@shared/react/toasts';
 import { cloneRequestSpec } from '../core/factory';
 import { toCurl } from '../core/curl';
 import { isForbiddenHeader, prepareRequest } from '../core/request';
+import { unsavedSensitiveHeaders } from '../core/sanitize';
 import { HTTP_METHODS, type HttpMethod, type KeyValue, type RequestSpec } from '../core/types';
 import { paramsFromUrl, urlWithParams } from '../core/url';
 import {
@@ -275,6 +276,16 @@ export function RequestEditor({ tab }: { tab: RequestTab }) {
             onChange={(headers) => update((r) => ({ ...r, headers }))}
           />
         )}
+        {section === 'headers' && unsavedSensitiveHeaders(request).length > 0 && (
+          <p className="muted request-note" data-testid="sensitive-headers-note">
+            Values of credential headers (
+            {unsavedSensitiveHeaders(request)
+              .map((h) => h.key)
+              .join(', ')}
+            ) are not saved with the request, in history or in exports. Use a {'{{variable}}'}{' '}
+            instead, or allow saving them on the Settings tab.
+          </p>
+        )}
         {section === 'auth' && (
           <AuthEditor auth={request.auth} onChange={(auth) => update((r) => ({ ...r, auth }))} />
         )}
@@ -357,6 +368,16 @@ function SettingsEditor({
           Browsers do not let web pages inspect intermediate redirect responses.
         </span>
       </div>
+      <label className="check">
+        <input
+          type="checkbox"
+          checked={settings.saveSensitiveHeaders ?? false}
+          onChange={(e) => set({ saveSensitiveHeaders: e.target.checked })}
+          data-testid="save-sensitive-headers"
+        />
+        Save values of credential headers (Authorization, Cookie, API keys …) with this request —
+        stored unencrypted
+      </label>
     </div>
   );
 }

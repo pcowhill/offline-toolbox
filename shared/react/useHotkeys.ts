@@ -1,6 +1,18 @@
 import { useEffect, useRef } from 'react';
 
-export type HotkeyMap = Record<string, (event: KeyboardEvent) => void>;
+/** Return `false` from a handler to signal "not handled" (the browser default then applies). */
+export type HotkeyMap = Record<string, (event: KeyboardEvent) => boolean | void>;
+
+/** Editing shortcuts that text fields handle natively; never hijacked while typing. */
+const NATIVE_EDITING = new Set([
+  'Mod+Z',
+  'Mod+Shift+Z',
+  'Mod+Y',
+  'Mod+A',
+  'Mod+C',
+  'Mod+V',
+  'Mod+X',
+]);
 
 /** True when keyboard focus is in a text field, where single-key shortcuts must not fire. */
 export function isEditableTarget(target: EventTarget | null): boolean {
@@ -47,9 +59,10 @@ export function useHotkeys(map: HotkeyMap, enabled = true) {
       const handler = mapRef.current[hotkey];
       if (!handler) return;
       const hasModifier = hotkey.startsWith('Mod+') || /^F\d+$/.test(event.key);
-      if (!hasModifier && isEditableTarget(event.target)) return;
+      const editable = isEditableTarget(event.target);
+      if (editable && (!hasModifier || NATIVE_EDITING.has(hotkey))) return;
+      if (handler(event) === false) return;
       event.preventDefault();
-      handler(event);
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);

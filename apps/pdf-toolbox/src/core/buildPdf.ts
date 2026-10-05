@@ -16,6 +16,7 @@ import {
   type PDFPage,
 } from 'pdf-lib';
 import { applyFormValues } from './forms';
+import { pruneForeignPages } from './prune';
 import { DrawContext, drawAnnotation } from './annotationsPdf';
 import { boxPageToView } from './geometry';
 import {
@@ -148,6 +149,7 @@ export async function buildPdf(input: BuildInput): Promise<BuildResult> {
   if (!flatten) rebuildAcroForm(out, loaded, needAppearances, warnings);
 
   setMetadata(out, input.title ?? firstTitle(loaded));
+  pruneForeignPages(out);
   let bytes = await out.save({ useObjectStreams: true });
 
   // 4. Redaction: replace affected pages by images rendered from the annotated output.
@@ -223,6 +225,7 @@ async function replaceWithImages(
     page.drawImage(image, { x: 0, y: 0, width: pageWidth, height: pageHeight });
   }
   setMetadata(final, title);
+  pruneForeignPages(final);
   return final.save({ useObjectStreams: true });
 }
 

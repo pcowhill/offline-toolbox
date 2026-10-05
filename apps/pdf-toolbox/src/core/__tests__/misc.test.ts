@@ -154,3 +154,25 @@ describe('optimisation', () => {
     expect(removeUnreachableObjects(doc.context)).toBe(1);
   });
 });
+
+describe('radio groups with /Opt export values', () => {
+  it('maps widget states to option values and fills by option value', async () => {
+    const { PDFName, PDFString } = await import('pdf-lib');
+    const { readFormFields, applyFormValues } = await import('../forms');
+    const doc = await PDFDocument.create();
+    const page = doc.addPage();
+    const group = doc.getForm().createRadioGroup('choice');
+    group.addOptionToPage('0', page, { x: 10, y: 10 });
+    group.addOptionToPage('1', page, { x: 40, y: 10 });
+    group.acroField.dict.set(
+      PDFName.of('Opt'),
+      doc.context.obj([PDFString.of('Yes'), PDFString.of('No')]),
+    );
+    const loaded = await PDFDocument.load(await doc.save());
+    const [field] = readFormFields(loaded);
+    expect(field.options).toEqual(['Yes', 'No']);
+    expect(field.stateToOption).toEqual({ '0': 'Yes', '1': 'No' });
+    expect(applyFormValues(loaded, { choice: 'No' }, { flatten: false }).warnings).toEqual([]);
+    expect(readFormFields(loaded)[0].value).toBe('No');
+  });
+});

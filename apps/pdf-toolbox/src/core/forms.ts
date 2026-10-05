@@ -35,6 +35,7 @@ export function readFormFields(doc: PDFDocument): FormFieldInfo[] {
     let value: FormValue = '';
     let options: string[] = [];
     let multiline = false;
+    let stateToOption: Record<string, string> | undefined;
     try {
       if (field instanceof PDFTextField) {
         value = field.getText() ?? '';
@@ -43,6 +44,14 @@ export function readFormFields(doc: PDFDocument): FormFieldInfo[] {
       else if (field instanceof PDFRadioGroup) {
         value = field.getSelected() ?? '';
         options = field.getOptions();
+        const widgets = field.acroField.getWidgets();
+        if (widgets.length === options.length) {
+          stateToOption = {};
+          widgets.forEach((widget, i) => {
+            const state = widget.getOnValue()?.decodeText();
+            if (state && !(state in stateToOption!)) stateToOption![state] = options[i];
+          });
+        }
       } else if (field instanceof PDFDropdown) {
         value = field.getSelected()[0] ?? '';
         options = field.getOptions();
@@ -61,6 +70,7 @@ export function readFormFields(doc: PDFDocument): FormFieldInfo[] {
       readOnly: field.isReadOnly(),
       multiline,
       required: field.isRequired(),
+      ...(stateToOption ? { stateToOption } : {}),
     };
   });
 }

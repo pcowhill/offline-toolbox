@@ -276,9 +276,30 @@ export function parseCurl(command: string): { spec: RequestSpec; warnings: strin
   const bearer = headers.find(
     ([k, v]) => k.toLowerCase() === 'authorization' && /^bearer\s+/i.test(v),
   );
+  const basic = headers.find(
+    ([k, v]) => k.toLowerCase() === 'authorization' && /^basic\s+/i.test(v),
+  );
   if (bearer && user === null) {
     spec.auth = { type: 'bearer', token: bearer[1].replace(/^bearer\s+/i, '') };
     spec.headers = spec.headers.filter((h) => h.key.toLowerCase() !== 'authorization');
+  } else if (basic && user === null) {
+    // Decode "Authorization: Basic …" into the Auth tab so the password is handled as a credential.
+    try {
+      const decoded = new TextDecoder().decode(
+        Uint8Array.from(atob(basic[1].replace(/^basic\s+/i, '').trim()), (c) => c.charCodeAt(0)),
+      );
+      const colon = decoded.indexOf(':');
+      if (colon >= 0) {
+        spec.auth = {
+          type: 'basic',
+          username: decoded.slice(0, colon),
+          password: decoded.slice(colon + 1),
+        };
+        spec.headers = spec.headers.filter((h) => h.key.toLowerCase() !== 'authorization');
+      }
+    } catch {
+      // Not valid base64: keep the header as typed.
+    }
   }
 
   if (!getMode) {

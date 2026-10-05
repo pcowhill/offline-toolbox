@@ -133,3 +133,12 @@ describe('lossless JSON', () => {
     expect(() => parseJsonTree('{"a":}')).toThrow(/line 1/);
   });
 });
+
+describe('curl credentials', () => {
+  it('moves an Authorization: Basic header into the Auth tab', () => {
+    const header = Buffer.from('ana:s3cret').toString('base64');
+    const { spec } = parseCurl(`curl https://h/ -H 'Authorization: Basic ${header}'`);
+    expect(spec.auth).toEqual({ type: 'basic', username: 'ana', password: 's3cret' });
+    expect(spec.headers).toEqual([]);
+  });
+});
