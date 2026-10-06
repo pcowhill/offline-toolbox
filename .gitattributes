@@ -1,0 +1,12 @@
+# Normalise line endings so committed build output is byte-identical on every OS.
+* text=auto eol=lf
+# Built site: never let Git rewrite bytes of generated files.
+dist/** -text
+*.pdf binary
+*.png binary
+*.jpg binary
+*.bcmap binary
+*.pfb binary
+*.ttf binary
+*.wasm binary
+*.icc binary

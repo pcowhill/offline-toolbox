@@ -1,0 +1,19 @@
+node_modules/
+# Test & tooling output
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.vite/
+*.tsbuildinfo
+.eslintcache
+# Editor / OS junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.log
+# Temporary build staging (the committed site lives in dist/)
+.dist-tmp/

@@ -1,0 +1,28 @@
+{
+  "$schema": "./tools.schema.json",
+  "site": {
+    "title": "Offline Toolbox",
+    "tagline": "Private, self-contained tools that run entirely in your browser — no server, no Internet."
+  },
+  "tools": [
+    {
+      "id": "api-workbench",
+      "name": "API Workbench",
+      "description": "Build, send and save HTTP/REST requests. Collections, environments, history and OpenAPI/Swagger import — a lightweight offline alternative to Postman.",
+      "icon": "icon.svg",
+      "accent": "#4f46e5",
+      "tags": ["HTTP", "REST", "OpenAPI"],
+      "csp": {
+        "connect-src": ["http:", "https:"]
+      }
+    },
+    {
+      "id": "pdf-toolbox",
+      "name": "PDF Toolbox",
+      "description": "Merge, split, reorder, rotate, annotate, sign, fill forms, convert and optimize PDFs. Everything is processed locally — files never leave your computer.",
+      "icon": "icon.svg",
+      "accent": "#dc2626",
+      "tags": ["PDF", "Annotate", "Convert"]
+    }
+  ]
+}

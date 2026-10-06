@@ -1,0 +1,192 @@
+# Test fixture written for Offline Toolbox (not a third-party specification).
+openapi: 3.0.3
+info:
+  title: Library API
+  version: 1.2.0
+  description: A small example API used by the API Workbench tests.
+servers:
+  - url: http://{host}:{port}/api
+    variables:
+      host:
+        default: 127.0.0.1
+      port:
+        default: '4010'
+tags:
+  - name: books
+    description: Book catalogue
+  - name: members
+security:
+  - bearerAuth: []
+paths:
+  /books:
+    get:
+      tags: [books]
+      summary: List books
+      operationId: listBooks
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - name: author
+          in: query
+          description: Filter by author name
+          schema:
+            type: string
+          example: Austen
+      responses:
+        '200':
+          description: A page of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    post:
+      tags: [books]
+      summary: Add a book
+      operationId: createBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewBook'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          $ref: '#/components/responses/Problem'
+  /books/{bookId}:
+    parameters:
+      - name: bookId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [books]
+      summary: Get a book
+      operationId: getBook
+      parameters:
+        - name: X-Request-Id
+          in: header
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found
+    delete:
+      tags: [books]
+      summary: Remove a book
+      deprecated: true
+      responses:
+        '204':
+          description: Deleted
+  /members/login:
+    post:
+      tags: [members]
+      summary: Log in
+      security: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                remember:
+                  type: boolean
+      responses:
+        '200':
+          description: OK
+  /members/{memberId}/avatar:
+    put:
+      tags: [members]
+      summary: Upload avatar
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                caption:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '204':
+          description: Uploaded
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 20
+  responses:
+    Problem:
+      description: Validation problem
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+  schemas:
+    NewBook:
+      type: object
+      required: [title, author]
+      properties:
+        title:
+          type: string
+          example: Emma
+        author:
+          type: string
+          example: Jane Austen
+        year:
+          type: integer
+          example: 1815
+        tags:
+          type: array
+          items:
+            type: string
+    Book:
+      allOf:
+        - $ref: '#/components/schemas/NewBook'
+        - type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            related:
+              type: array
+              items:
+                $ref: '#/components/schemas/Book'

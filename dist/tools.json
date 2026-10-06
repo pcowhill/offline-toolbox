@@ -1,0 +1,17 @@
+{
+  "title": "Offline Toolbox",
+  "tools": [
+    {
+      "id": "api-workbench",
+      "name": "API Workbench",
+      "description": "Build, send and save HTTP/REST requests. Collections, environments, history and OpenAPI/Swagger import — a lightweight offline alternative to Postman.",
+      "path": "./api-workbench/"
+    },
+    {
+      "id": "pdf-toolbox",
+      "name": "PDF Toolbox",
+      "description": "Merge, split, reorder, rotate, annotate, sign, fill forms, convert and optimize PDFs. Everything is processed locally — files never leave your computer.",
+      "path": "./pdf-toolbox/"
+    }
+  ]
+}

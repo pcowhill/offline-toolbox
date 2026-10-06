@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Offline Toolbox tool registry",
+  "type": "object",
+  "required": ["site", "tools"],
+  "properties": {
+    "site": {
+      "type": "object",
+      "required": ["title", "tagline"],
+      "properties": {
+        "title": { "type": "string" },
+        "tagline": { "type": "string" }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description", "icon"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$",
+            "description": "Folder name under apps/ and the URL path segment in dist/."
+          },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "icon": {
+            "type": "string",
+            "description": "Path to an SVG/PNG icon, relative to apps/<id>/."
+          },
+          "accent": { "type": "string", "description": "CSS colour used on the portal card." },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "hidden": {
+            "type": "boolean",
+            "description": "Build the tool but hide it from the portal."
+          },
+          "csp": {
+            "type": "object",
+            "description": "Extra Content-Security-Policy sources appended to the default offline policy.",
+            "additionalProperties": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    }
+  }
+}
